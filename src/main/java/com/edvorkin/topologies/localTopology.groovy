@@ -9,11 +9,12 @@ import com.mongodb.DBCollection
 import com.mongodb.Mongo
 import com.mongodb.MongoURI
 import com.edvorkin.bolt.ArticleExtractorBolt
-import com.edvorkin.bolt.IntermediateRankingsBolt
 import com.edvorkin.bolt.MongoWriterBolt
-import com.edvorkin.bolt.RollingCountBolt
-import com.edvorkin.bolt.TotalRankingsBolt
 import com.edvorkin.spout.MongoCappedCollectionSpout
+import storm.starter.bolt.IntermediateRankingsBolt
+import storm.starter.bolt.RollingCountBolt
+import storm.starter.bolt.TotalRankingsBolt
+import storm.starter.util.StormRunner
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,28 +89,22 @@ conf.setDebug(true);
 int tickFrequencyInSeconds = 10;
 conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, tickFrequencyInSeconds);
 
-
-
-
-//LocalCluster cluster = new LocalCluster();
-//StormRunner.runTopologyLocally(builder.createTopology(), "TrendingTopic", conf, runtimeInSeconds);
-
-
+//Start pushing contents to collection in a thread before starting Storm cluster
 Thread.start {
     Random random=new Random()
     MongoURI uri = new MongoURI(url);
 
-            mongo = new Mongo(uri);
-            // Get the db the user wants
-            db = mongo.getDB(uri.getDatabase());
-            println "connected to $url"
+    mongo = new Mongo(uri);
+    // Get the db the user wants
+    db = mongo.getDB(uri.getDatabase());
+    println "connected to $url"
     DBCollection collection = db.getCollection(collectionName);
-   Thread.sleep(1000)
-   while (true) {
-   def activityId=random.nextInt(20)
-   def event=["uid":'1234567',"activityId":articles[activityId] as String,"url":'http://www.medscape.com/viewarticle/'+activityId]
-   BasicDBObject basicDBObject=new BasicDBObject()
-    basicDBObject.putAll(event)
+    Thread.sleep(1000)
+    while (true) {
+        def activityId=random.nextInt(20)
+        def event=["uid":'1234567',"activityId":articles[activityId] as String,"url":'http://www.medscape.com/viewarticle/'+activityId]
+        BasicDBObject basicDBObject=new BasicDBObject()
+        basicDBObject.putAll(event)
 
 
         collection.insert(basicDBObject)
@@ -117,6 +112,8 @@ Thread.start {
     }
 }
 
+//LocalCluster cluster = new LocalCluster();
+StormRunner.runTopologyLocally(builder.createTopology(), "TrendingTopic", conf, runtimeInSeconds);
 
 //cluster.submitTopology("TrendingTopic", conf, builder.createTopology());
 

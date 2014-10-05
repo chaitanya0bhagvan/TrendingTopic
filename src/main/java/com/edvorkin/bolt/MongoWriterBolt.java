@@ -6,10 +6,10 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Tuple;
 import com.mongodb.*;
-import com.edvorkin.tools.Rankable;
-import com.edvorkin.tools.Rankings;
 import org.apache.log4j.Logger;
 import com.edvorkin.tools.TupleHelpers;
+import storm.starter.tools.Rankable;
+import storm.starter.tools.Rankings;
 
 import java.net.UnknownHostException;
 import java.util.*;

@@ -10,11 +10,11 @@ import com.mongodb.DBCollection
 import com.mongodb.Mongo
 import com.mongodb.MongoURI
 import com.edvorkin.bolt.ArticleExtractorBolt
-import com.edvorkin.bolt.IntermediateRankingsBolt
 import com.edvorkin.bolt.MongoWriterBolt
-import com.edvorkin.bolt.RollingCountBolt
-import com.edvorkin.bolt.TotalRankingsBolt
 import com.edvorkin.spout.MongoCappedCollectionSpout
+import storm.starter.bolt.IntermediateRankingsBolt
+import storm.starter.bolt.RollingCountBolt
+import storm.starter.bolt.TotalRankingsBolt
 
 /**
  * Created with IntelliJ IDEA.
@@ -99,9 +99,6 @@ Config conf = new Config();
 conf.setMaxSpoutPending(1000);
 conf.setMessageTimeoutSecs(20)
 conf.setDebug(Boolean.parseBoolean(config.debug));
-
-
-
 
 // send test data
 
